@@ -157,13 +157,13 @@ def send_email(articles, new_count):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"AI Pulse {session} - {total} Articles | {run_time}"
     msg["From"]    = f"AI Pulse <{GMAIL_USER}>"
-    msg["To"]      = EMAIL_TO
+    msg["To"] = ", ".join(EMAIL_TO.split(","))
     msg.attach(MIMEText(text, "plain"))
     msg.attach(MIMEText(html, "html"))
 
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
         server.login(GMAIL_USER, GMAIL_APP_PASS)
-        server.sendmail(GMAIL_USER, EMAIL_TO, msg.as_string())
+        server.sendmail(GMAIL_USER, EMAIL_TO.split(","), msg.as_string())
     print(f"  Email sent to {EMAIL_TO}")
 
 def run():
