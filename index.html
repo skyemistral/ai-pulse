@@ -5,65 +5,61 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Pulse — Real-Time News</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background:#0a0a0f; color:#e2e8f0; min-height:100vh; }
-  .header { background: linear-gradient(135deg, #0f0f1a 0%, #1a0a2e 50%, #0f1a2e 100%); border-bottom:1px solid #1e293b; padding:1.5rem 2rem; position:sticky; top:0; z-index:100; backdrop-filter:blur(10px); }
-  .header-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
-  .brand { display:flex; align-items:center; gap:0.75rem; }
-  .brand-icon { width:42px; height:42px; background:linear-gradient(135deg,#6366f1,#a855f7); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; box-shadow:0 0 20px rgba(168,85,247,0.4); }
-  .brand-text h1 { font-size:1.5rem; font-weight:800; background:linear-gradient(90deg,#a78bfa,#60a5fa,#34d399); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-  .brand-text p { font-size:0.75rem; color:#64748b; margin-top:2px; }
-  .header-meta { display:flex; align-items:center; gap:1.5rem; }
-  .live-badge { display:flex; align-items:center; gap:0.5rem; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:20px; padding:0.4rem 0.9rem; font-size:0.75rem; color:#10b981; }
-  .live-dot { width:8px; height:8px; background:#10b981; border-radius:50%; animation:pulse 1.5s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
-  .last-updated { font-size:0.72rem; color:#475569; }
-  .total-badge { background:rgba(99,102,241,0.15); border:1px solid rgba(99,102,241,0.3); border-radius:20px; padding:0.4rem 0.9rem; font-size:0.75rem; color:#818cf8; }
-  .stats-bar { max-width:1400px; margin:1.5rem auto; padding:0 2rem; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
-  .stat-card { background:linear-gradient(135deg,#111827,#1e293b); border:1px solid #1e293b; border-radius:16px; padding:1.2rem 1.5rem; display:flex; align-items:center; gap:1rem; transition:transform 0.2s; }
-  .stat-card:hover { transform:translateY(-2px); }
-  .stat-icon { font-size:1.8rem; }
-  .stat-info h3 { font-size:1.5rem; font-weight:700; }
-  .stat-info p { font-size:0.72rem; color:#64748b; margin-top:2px; }
-  .vc .stat-info h3 { color:#10b981; }
-  .infra .stat-info h3 { color:#3b82f6; }
-  .research .stat-info h3 { color:#a855f7; }
-  .schedule-banner { max-width:1400px; margin:0 auto 1rem; padding:0 2rem; }
-  .schedule-info { background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(168,85,247,0.08)); border:1px solid rgba(99,102,241,0.2); border-radius:12px; padding:0.8rem 1.2rem; display:flex; align-items:center; gap:0.75rem; font-size:0.78rem; color:#94a3b8; }
-  .schedule-info strong { color:#a78bfa; }
-  .tabs-wrapper { max-width:1400px; margin:0 auto; padding:0 2rem; }
-  .tabs { display:flex; gap:0.5rem; border-bottom:1px solid #1e293b; padding-bottom:0; overflow-x:auto; }
-  .tab { background:transparent; border:none; color:#64748b; padding:0.8rem 1.5rem; font-size:0.85rem; font-weight:600; cursor:pointer; border-bottom:3px solid transparent; transition:all 0.2s; white-space:nowrap; display:flex; align-items:center; gap:0.5rem; }
-  .tab:hover { color:#e2e8f0; }
-  .tab.active { color:#e2e8f0; border-bottom-color:#6366f1; }
-  .badge { background:#1e293b; border-radius:20px; padding:0.15rem 0.5rem; font-size:0.7rem; color:#94a3b8; }
-  .tab.active .badge { background:#312e81; color:#a78bfa; }
-  .content { max-width:1400px; margin:0 auto; padding:1.5rem 2rem 3rem; }
-  .panel { display:grid; grid-template-columns:repeat(auto-fill,minmax(360px,1fr)); gap:1rem; }
-  .card-link { text-decoration:none; display:block; }
-  .card { background:#111827; border:1px solid #1e293b; border-radius:16px; padding:1.3rem; transition:all 0.2s; height:100%; }
-  .card:hover { border-color:#6366f1; transform:translateY(-3px); box-shadow:0 8px 30px rgba(99,102,241,0.15); background:#131d2e; }
-  .card-header { display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem; margin-bottom:0.75rem; }
-  .source-badge { display:flex; align-items:center; gap:0.4rem; }
-  .src-initial { width:22px; height:22px; background:linear-gradient(135deg,#6366f1,#a855f7); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:700; color:white; flex-shrink:0; }
-  .src-name { font-size:0.7rem; color:#94a3b8; font-weight:500; }
-  .pub-date { font-size:0.65rem; color:#475569; white-space:nowrap; }
-  .card-title { font-size:0.92rem; font-weight:600; color:#e2e8f0; line-height:1.45; margin-bottom:0.6rem; }
-  .card-summary { font-size:0.78rem; color:#64748b; line-height:1.6; margin-bottom:0.75rem; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-  .card-footer { display:flex; justify-content:flex-end; }
-  .read-more { font-size:0.72rem; color:#6366f1; font-weight:600; }
-  .card:hover .read-more { color:#818cf8; }
-  ::-webkit-scrollbar { width:6px; height:6px; }
-  ::-webkit-scrollbar-track { background:#0a0a0f; }
-  ::-webkit-scrollbar-thumb { background:#1e293b; border-radius:3px; }
-  @media(max-width:768px) {
-    .stats-bar { grid-template-columns:1fr; }
-    .panel { grid-template-columns:1fr; }
-    .header-meta { flex-wrap:wrap; gap:0.5rem; }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#0a0a0f;color:#e2e8f0;min-height:100vh;}
+  .header{background:linear-gradient(135deg,#0f0f1a 0%,#1a0a2e 50%,#0f1a2e 100%);border-bottom:1px solid #1e293b;padding:1.5rem 2rem;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);}
+  .header-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+  .brand{display:flex;align-items:center;gap:0.75rem;}
+  .brand-icon{width:42px;height:42px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 0 20px rgba(168,85,247,0.4);}
+  .brand-text h1{font-size:1.5rem;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .brand-text p{font-size:0.75rem;color:#64748b;margin-top:2px;}
+  .header-meta{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;}
+  .live-badge{display:flex;align-items:center;gap:0.5rem;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:20px;padding:0.4rem 0.9rem;font-size:0.75rem;color:#10b981;}
+  .live-dot{width:8px;height:8px;background:#10b981;border-radius:50%;animation:pulse 1.5s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+  .last-updated{font-size:0.72rem;color:#475569;}
+  .total-badge{background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:20px;padding:0.4rem 0.9rem;font-size:0.75rem;color:#818cf8;}
+  .headlines-bar{max-width:1400px;margin:1.5rem auto;padding:0 2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+  .headline-card{background:linear-gradient(135deg,#111827,#1a2236);border:1px solid #1e293b;border-radius:16px;padding:1.25rem;transition:transform 0.2s;}
+  .headline-card:hover{transform:translateY(-2px);}
+  .headline-cat{font-size:0.72rem;font-weight:700;margin-bottom:0.85rem;padding-bottom:0.6rem;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:0.4rem;}
+  .schedule-banner{max-width:1400px;margin:0 auto 1rem;padding:0 2rem;}
+  .schedule-info{background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(168,85,247,0.08));border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:0.8rem 1.2rem;font-size:0.78rem;color:#94a3b8;text-align:center;}
+  .schedule-info strong{color:#a78bfa;}
+  .tabs-wrapper{max-width:1400px;margin:0 auto;padding:0 2rem;}
+  .tabs{display:flex;gap:0.5rem;border-bottom:1px solid #1e293b;overflow-x:auto;}
+  .tab{background:transparent;border:none;color:#64748b;padding:0.8rem 1.5rem;font-size:0.85rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;white-space:nowrap;display:flex;align-items:center;gap:0.5rem;}
+  .tab:hover{color:#e2e8f0;}
+  .tab.active{color:#e2e8f0;border-bottom-color:#6366f1;}
+  .badge{background:#1e293b;border-radius:20px;padding:0.15rem 0.5rem;font-size:0.7rem;color:#94a3b8;}
+  .tab.active .badge{background:#312e81;color:#a78bfa;}
+  .content{max-width:1400px;margin:0 auto;padding:1.5rem 2rem 3rem;}
+  .panel{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:1rem;}
+  .card-link{text-decoration:none;display:block;}
+  .card{background:#111827;border:1px solid #1e293b;border-radius:16px;padding:1.3rem;transition:all 0.2s;height:100%;}
+  .card:hover{border-color:#6366f1;transform:translateY(-3px);box-shadow:0 8px 30px rgba(99,102,241,0.15);background:#131d2e;}
+  .card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem;margin-bottom:0.75rem;}
+  .source-badge{display:flex;align-items:center;gap:0.4rem;}
+  .src-initial{width:22px;height:22px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:white;flex-shrink:0;}
+  .src-name{font-size:0.7rem;color:#94a3b8;font-weight:500;}
+  .pub-date{font-size:0.65rem;color:#475569;white-space:nowrap;}
+  .card-title{font-size:0.92rem;font-weight:600;color:#e2e8f0;line-height:1.45;margin-bottom:0.6rem;}
+  .card-summary{font-size:0.78rem;color:#64748b;line-height:1.6;margin-bottom:0.75rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .card-footer{display:flex;justify-content:flex-end;}
+  .read-more{font-size:0.72rem;color:#6366f1;font-weight:600;}
+  .card:hover .read-more{color:#818cf8;}
+  ::-webkit-scrollbar{width:6px;height:6px;}
+  ::-webkit-scrollbar-track{background:#0a0a0f;}
+  ::-webkit-scrollbar-thumb{background:#1e293b;border-radius:3px;}
+  @media(max-width:768px){
+    .headlines-bar{grid-template-columns:1fr;}
+    .panel{grid-template-columns:1fr;}
+    .header-meta{gap:0.5rem;}
   }
 </style>
 </head>
 <body>
+
 <div class="header">
   <div class="header-inner">
     <div class="brand">
@@ -75,46 +71,122 @@
     </div>
     <div class="header-meta">
       <div class="live-badge"><span class="live-dot"></span> LIVE</div>
-      <div class="last-updated">Updated: February 22, 2026 at 12:00 PM PST</div>
-      <div class="total-badge">📰 21 articles · Last 48h</div>
+      <div class="last-updated">Updated: February 22, 2026 at 02:03 PM PST</div>
+      <div class="total-badge">📰 17 articles · Last 48h</div>
     </div>
   </div>
 </div>
-<div class="stats-bar">
-  <div class="stat-card vc"><div class="stat-icon">💰</div><div class="stat-info"><h3>2</h3><p>Venture Capital & Funding deals</p></div></div>
-  <div class="stat-card infra"><div class="stat-icon">🖥️</div><div class="stat-info"><h3>3</h3><p>AI Infrastructure updates</p></div></div>
-  <div class="stat-card research"><div class="stat-icon">🚀</div><div class="stat-info"><h3>16</h3><p>AI Startups & Research stories</p></div></div>
+
+<div class="headlines-bar">
+  <div class="headline-card">
+    <div class="headline-cat" style="color:#10b981;">💰 Top VC & Funding</div>
+    <a href="https://siliconangle.com/2026/02/20/google-reportedly-invest-100m-ai-cloud-operator-fluidstack/" target="_blank" style="text-decoration:none;display:block;margin-bottom:0.85rem;">
+      <div style="display:flex;align-items:flex-start;gap:0.65rem;">
+        <div style="width:3px;background:#10b981;border-radius:2px;flex-shrink:0;margin-top:3px;align-self:stretch;"></div>
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;color:#e2e8f0;line-height:1.45;margin-bottom:3px;">Google could reportedly invest $100M in AI cloud operator Fluidstack</div>
+          <div style="font-size:0.68rem;color:#475569;">💰 SiliconAngle · Feb 21, 2026</div>
+        </div>
+      </div>
+    </a>
+    <a href="https://siliconangle.com/2026/02/20/ai-code-translation-startup-code-metal-reels-125m-1-25b-valuation/" target="_blank" style="text-decoration:none;display:block;margin-bottom:0.85rem;">
+      <div style="display:flex;align-items:flex-start;gap:0.65rem;">
+        <div style="width:3px;background:#10b981;border-radius:2px;flex-shrink:0;margin-top:3px;align-self:stretch;"></div>
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;color:#e2e8f0;line-height:1.45;margin-bottom:3px;">Code Metal raises $125M at $1.25B valuation</div>
+          <div style="font-size:0.68rem;color:#475569;">💰 SiliconAngle · Feb 20, 2026</div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="headline-card">
+    <div class="headline-cat" style="color:#3b82f6;">🖥️ Top Infrastructure</div>
+    <a href="https://siliconangle.com/2026/02/20/cybersecurity-stocks-drop-anthropic-debuts-claude-code-security/" target="_blank" style="text-decoration:none;display:block;margin-bottom:0.85rem;">
+      <div style="display:flex;align-items:flex-start;gap:0.65rem;">
+        <div style="width:3px;background:#3b82f6;border-radius:2px;flex-shrink:0;margin-top:3px;align-self:stretch;"></div>
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;color:#e2e8f0;line-height:1.45;margin-bottom:3px;">Cybersecurity stocks drop after Anthropic debuts Claude Code Security</div>
+          <div style="font-size:0.68rem;color:#475569;">🖥️ SiliconAngle · Feb 20, 2026</div>
+        </div>
+      </div>
+    </a>
+    <a href="https://techcrunch.com/2026/02/20/indias-sarvam-launches-indus-ai-chat-app-as-competition-heats-up/" target="_blank" style="text-decoration:none;display:block;margin-bottom:0.85rem;">
+      <div style="display:flex;align-items:flex-start;gap:0.65rem;">
+        <div style="width:3px;background:#3b82f6;border-radius:2px;flex-shrink:0;margin-top:3px;align-self:stretch;"></div>
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;color:#e2e8f0;line-height:1.45;margin-bottom:3px;">India's Sarvam launches Indus AI chat app as competition heats up</div>
+          <div style="font-size:0.68rem;color:#475569;">🖥️ TechCrunch · Feb 21, 2026</div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="headline-card">
+    <div class="headline-cat" style="color:#a855f7;">🚀 Top Startups & Research</div>
+    <a href="https://techcrunch.com/2026/02/21/google-vp-warns-that-two-types-of-ai-startups-may-not-survive/" target="_blank" style="text-decoration:none;display:block;margin-bottom:0.85rem;">
+      <div style="display:flex;align-items:flex-start;gap:0.65rem;">
+        <div style="width:3px;background:#a855f7;border-radius:2px;flex-shrink:0;margin-top:3px;align-self:stretch;"></div>
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;color:#e2e8f0;line-height:1.45;margin-bottom:3px;">Google VP warns that two types of AI startups may not survive</div>
+          <div style="font-size:0.68rem;color:#475569;">🚀 TechCrunch · Feb 21, 2026</div>
+        </div>
+      </div>
+    </a>
+    <a href="https://techcrunch.com/2026/02/21/openai-debated-calling-police-about-suspected-canadian-shooters-chats/" target="_blank" style="text-decoration:none;display:block;margin-bottom:0.85rem;">
+      <div style="display:flex;align-items:flex-start;gap:0.65rem;">
+        <div style="width:3px;background:#a855f7;border-radius:2px;flex-shrink:0;margin-top:3px;align-self:stretch;"></div>
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;color:#e2e8f0;line-height:1.45;margin-bottom:3px;">OpenAI debated calling police about suspected Canadian shooter's chats</div>
+          <div style="font-size:0.68rem;color:#475569;">🚀 TechCrunch · Feb 21, 2026</div>
+        </div>
+      </div>
+    </a>
+    <a href="https://siliconangle.com/2026/02/21/ai-trust-gap-developers-grapple-issues-around-security-memory-cost-interoperability/" target="_blank" style="text-decoration:none;display:block;margin-bottom:0.85rem;">
+      <div style="display:flex;align-items:flex-start;gap:0.65rem;">
+        <div style="width:3px;background:#a855f7;border-radius:2px;flex-shrink:0;margin-top:3px;align-self:stretch;"></div>
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;color:#e2e8f0;line-height:1.45;margin-bottom:3px;">The AI trust gap: Developers grapple with security, memory, cost and interoperability</div>
+          <div style="font-size:0.68rem;color:#475569;">🚀 SiliconAngle · Feb 22, 2026</div>
+        </div>
+      </div>
+    </a>
+  </div>
 </div>
+
 <div class="schedule-banner">
-  <div class="schedule-info">🕐 <span>Auto-refreshes daily at <strong>5:00 AM PST</strong> and <strong>5:00 PM PST</strong> · Email alerts sent to Skye Hart · Showing articles from the last <strong>48 hours</strong></span></div>
+  <div class="schedule-info">
+    🕐 Refreshes daily at <strong>5:00 AM PST</strong> and <strong>5:00 PM PST</strong> · Articles from the last <strong>48 hours</strong>
+  </div>
 </div>
+
 <div class="tabs-wrapper">
   <div class="tabs">
     <button class="tab active" onclick="showTab('Venture Capital & Funding')">💰 Venture Capital & Funding <span class="badge">2</span></button>
     <button class="tab" onclick="showTab('AI Infrastructure')">🖥️ AI Infrastructure <span class="badge">3</span></button>
-    <button class="tab" onclick="showTab('AI Startups & Research')">🚀 AI Startups & Research <span class="badge">16</span></button>
+    <button class="tab" onclick="showTab('AI Startups & Research')">🚀 AI Startups & Research <span class="badge">12</span></button>
   </div>
 </div>
+
 <div class="content">
   <div class="panel" id="panel-Venture Capital & Funding" style="display:grid">
-    <a href="https://siliconangle.com/2026/02/20/google-reportedly-invest-100m-ai-cloud-operator-fluidstack/" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">S</span><span class="src-name">SiliconAngle</span></div><span class="pub-date">🕐 Feb 21, 2026 01:34 AM UTC</span></div><h3 class="card-title">Google could reportedly invest $100M in AI cloud operator Fluidstack</h3><p class="card-summary">Cloud startup Fluidstack Ltd. is reportedly in talks with Google LLC about a $100 million investment. The deal could value Fluidstack at $7.5 billion.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
-    <a href="https://siliconangle.com/2026/02/20/ai-code-translation-startup-code-metal-reels-125m-1-25b-valuation/" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">S</span><span class="src-name">SiliconAngle</span></div><span class="pub-date">🕐 Feb 20, 2026 09:29 PM UTC</span></div><h3 class="card-title">AI code translation startup Code Metal reels in $125M at $1.25B valuation</h3><p class="card-summary">Code Metal closed a $125 million investment, now valued at $1.25 billion, led by Salesforce Ventures.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
+    <a href="https://siliconangle.com/2026/02/20/google-reportedly-invest-100m-ai-cloud-operator-fluidstack/" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">S</span><span class="src-name">SiliconAngle</span></div><span class="pub-date">🕐 Feb 21, 2026 01:34 AM UTC</span></div><h3 class="card-title">Google could reportedly invest $100M in AI cloud operator Fluidstack</h3><p class="card-summary">Cloud startup Fluidstack is reportedly in talks with Google about a $100 million investment, valuing the company at $7.5 billion.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
+    <a href="https://siliconangle.com/2026/02/20/ai-code-translation-startup-code-metal-reels-125m-1-25b-valuation/" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">S</span><span class="src-name">SiliconAngle</span></div><span class="pub-date">🕐 Feb 20, 2026 09:29 PM UTC</span></div><h3 class="card-title">AI code translation startup Code Metal reels in $125M at $1.25B valuation</h3><p class="card-summary">Code Metal closed a $125 million investment round led by Salesforce Ventures, now valued at $1.25 billion.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
   </div>
   <div class="panel" id="panel-AI Infrastructure" style="display:none">
-    <a href="https://github.com/xaskasdf/ntransformer" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">H</span><span class="src-name">Hacker News</span></div><span class="pub-date">🕐 Feb 21, 2026 08:57 PM UTC</span></div><h3 class="card-title">Show HN: Llama 3.1 70B on a single RTX 3090 via NVMe-to-GPU bypassing the CPU</h3><p class="card-summary">Running transformer models bypassing the CPU/RAM, connecting the GPU directly to NVMe.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
-    <a href="https://www.anuragk.com/blog/posts/Taalas.html" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">H</span><span class="src-name">Hacker News</span></div><span class="pub-date">🕐 Feb 21, 2026 07:07 PM UTC</span></div><h3 class="card-title">How Taalas "prints" LLM onto a chip?</h3><p class="card-summary">Deep dive into Taalas and how it embeds LLM models directly onto hardware chips.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
-    <a href="https://www.commondreams.org/news/new-brunswick-ai-data-center" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">H</span><span class="src-name">Hacker News</span></div><span class="pub-date">🕐 Feb 20, 2026 09:24 PM UTC</span></div><h3 class="card-title">'A Big Fuck You to Big Tech': New Jersey Residents Defeat AI Data Center</h3><p class="card-summary">Community opposition successfully blocks a major AI data center project in New Brunswick, New Jersey.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
+    <a href="https://siliconangle.com/2026/02/20/cybersecurity-stocks-drop-anthropic-debuts-claude-code-security/" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">S</span><span class="src-name">SiliconAngle</span></div><span class="pub-date">🕐 Feb 20, 2026 11:45 PM UTC</span></div><h3 class="card-title">Cybersecurity stocks drop after Anthropic debuts Claude Code Security</h3><p class="card-summary">Anthropic introduced Claude Code Security for finding software vulnerabilities, available in Enterprise and Teams editions.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
+    <a href="https://techcrunch.com/2026/02/20/indias-sarvam-launches-indus-ai-chat-app-as-competition-heats-up/" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">T</span><span class="src-name">TechCrunch AI</span></div><span class="pub-date">🕐 Feb 21, 2026 01:00 AM UTC</span></div><h3 class="card-title">India's Sarvam launches Indus AI chat app as competition heats up</h3><p class="card-summary">Sarvam's Indus chat app is currently available in beta as India's AI race intensifies.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
   </div>
   <div class="panel" id="panel-AI Startups & Research" style="display:none">
     <a href="https://techcrunch.com/2026/02/21/google-vp-warns-that-two-types-of-ai-startups-may-not-survive/" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">T</span><span class="src-name">TechCrunch AI</span></div><span class="pub-date">🕐 Feb 21, 2026 04:00 PM UTC</span></div><h3 class="card-title">Google VP warns that two types of AI startups may not survive</h3><p class="card-summary">LLM wrappers and AI aggregators face mounting pressure with shrinking margins and limited differentiation.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
-    <a href="https://siliconangle.com/2026/02/20/cybersecurity-stocks-drop-anthropic-debuts-claude-code-security/" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">S</span><span class="src-name">SiliconAngle</span></div><span class="pub-date">🕐 Feb 20, 2026 11:45 PM UTC</span></div><h3 class="card-title">Cybersecurity stocks drop after Anthropic debuts Claude Code Security</h3><p class="card-summary">Anthropic introduced Claude Code Security for finding software vulnerabilities, rattling cybersecurity stocks.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
-    <a href="https://techcrunch.com/2026/02/20/indias-sarvam-launches-indus-ai-chat-app-as-competition-heats-up/" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">T</span><span class="src-name">TechCrunch AI</span></div><span class="pub-date">🕐 Feb 21, 2026 01:00 AM UTC</span></div><h3 class="card-title">India's Sarvam launches Indus AI chat app as competition heats up</h3><p class="card-summary">Sarvam's Indus chat app is currently available in beta as India's AI race intensifies.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
+    <a href="https://techcrunch.com/2026/02/21/openai-debated-calling-police-about-suspected-canadian-shooters-chats/" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">T</span><span class="src-name">TechCrunch AI</span></div><span class="pub-date">🕐 Feb 21, 2026 03:25 PM UTC</span></div><h3 class="card-title">OpenAI debated calling police about suspected Canadian shooter's chats</h3><p class="card-summary">Jesse Van Rootselaar's descriptions of gun violence were flagged by tools that monitor ChatGPT for misuse.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
+    <a href="https://siliconangle.com/2026/02/21/ai-trust-gap-developers-grapple-issues-around-security-memory-cost-interoperability/" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">S</span><span class="src-name">SiliconAngle</span></div><span class="pub-date">🕐 Feb 22, 2026 03:24 AM UTC</span></div><h3 class="card-title">The AI trust gap: Developers grapple with security, memory, cost and interoperability</h3><p class="card-summary">Stack Overflow survey finds developers willing to use AI but trust has dropped sharply amid security and cost concerns.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
+    <a href="https://techcrunch.com/2026/02/20/anthropic-funded-group-backs-candidate-attacked-by-rival-ai-super-pac/" target="_blank" class="card-link"><div class="card"><div class="card-header"><div class="source-badge"><span class="src-initial">T</span><span class="src-name">TechCrunch AI</span></div><span class="pub-date">🕐 Feb 20, 2026 08:52 PM UTC</span></div><h3 class="card-title">Anthropic-funded group backs candidate attacked by rival AI super PAC</h3><p class="card-summary">Dueling pro-AI PACs center around a New York congressional bid tied to AI safety legislation.</p><div class="card-footer"><span class="read-more">Read full article →</span></div></div></a>
   </div>
 </div>
+
 <script>
-function showTab(cat) {
-  document.querySelectorAll('.panel').forEach(p => p.style.display='none');
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+function showTab(cat){
+  document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('panel-'+cat).style.display='grid';
   event.currentTarget.classList.add('active');
 }
